@@ -21,7 +21,6 @@ class Deck:
     def __len__(self):
         """
         Number of cards in the deck.
-        :return:
         """
         return len(self._cards)
 
@@ -30,24 +29,17 @@ class Deck:
     def load(cls, filename):
         """
         Load a deck.
-        :param filename:
-        :return:
         """
 
     def save(self, filename):
         """
         Save the deck to file.
-        :param filename:
-        :return:
         """
 
     # Deck Creation interfaces.
     def append(self, card):
         """
         Add a flashcard to the deck.
-
-        :param card:
-        :return:
         """
         self._cards.append(card)
 
@@ -55,7 +47,6 @@ class Deck:
     def answers(self):
         """
         Return a set of all answers.
-        :return:
         """
         a = frozenset((c.answer for c in self._cards))
         return a

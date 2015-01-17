@@ -21,44 +21,44 @@ class FlashcardTestCase(unittest.TestCase):
 
         self.assertEqual(card.question, question)
         self.assertEqual(card.answer, answer)
-        self.assertEqual(card._attempts, 0)
-        self.assertEqual(card._correct, 0)
-        self.assertEqual(card._last_shown, None)
+        self.assertEqual(card.n_attempts, 0)
+        self.assertEqual(card.n_correct, 0)
+        self.assertEqual(card.last_shown, None)
 
     def test_correct(self):
         """
         Test correct interface.
         """
         card = Flashcard('question', 'answer')
-        correct = card._correct
-        attempts = card._attempts
+        correct = card.n_correct
+        attempts = card.n_attempts
         card.correct()
 
-        self.assertEqual(card._correct, correct + 1)
-        self.assertEqual(card._attempts, attempts + 1)
-        self.assertTrue(isinstance(card._last_shown, datetime))
+        self.assertEqual(card.n_correct, correct + 1)
+        self.assertEqual(card.n_attempts, attempts + 1)
+        self.assertTrue(isinstance(card.last_shown, datetime))
 
     def test_incorrect(self):
         """
         Test incorrect interface.
         """
         card = Flashcard('question', 'answer')
-        correct = card._correct
-        attempts = card._attempts
+        correct = card.n_correct
+        attempts = card.n_attempts
         card.incorrect()
 
-        self.assertEqual(card._correct, correct)
-        self.assertEqual(card._attempts, attempts + 1)
-        self.assertTrue(isinstance(card._last_shown, datetime))
+        self.assertEqual(card.n_correct, correct)
+        self.assertEqual(card.n_attempts, attempts + 1)
+        self.assertTrue(isinstance(card.last_shown, datetime))
 
     def test_display(self):
         """
         Test display interfaces (__str__ and header).
         """
         card = Flashcard('Question', 'Answer')
-        card._attempts = 'Attempts'
-        card._correct = 'Correct'
-        card._last_shown = 'Last Shown'
+        card.n_attempts = 'Attempts'
+        card.n_correct = 'Correct'
+        card.last_shown = 'Last Shown'
         self.assertEqual(str(card), card.headers())
 
 if __name__ == '__main__':
