@@ -11,10 +11,9 @@ from lib.flashcard import Flashcard
 
 
 class FlashcardTestCase(unittest.TestCase):
+    """Unittests for Flashcard class."""
     def test_construction(self):
-        """
-        Test construction of a flashcard.
-        """
+        """Constructor tests."""
         question = 'q'
         answer = 'a'
         card = Flashcard(question, answer)
@@ -26,9 +25,7 @@ class FlashcardTestCase(unittest.TestCase):
         self.assertEqual(card.last_shown, None)
 
     def test_correct(self):
-        """
-        Test correct interface.
-        """
+        """correct interface tests."""
         card = Flashcard('question', 'answer')
         correct = card.n_correct
         attempts = card.n_attempts
@@ -39,9 +36,7 @@ class FlashcardTestCase(unittest.TestCase):
         self.assertTrue(isinstance(card.last_shown, datetime))
 
     def test_incorrect(self):
-        """
-        Test incorrect interface.
-        """
+        """incorrect() interface tests."""
         card = Flashcard('question', 'answer')
         correct = card.n_correct
         attempts = card.n_attempts
@@ -52,9 +47,7 @@ class FlashcardTestCase(unittest.TestCase):
         self.assertTrue(isinstance(card.last_shown, datetime))
 
     def test_display(self):
-        """
-        Test display interfaces (__str__ and header).
-        """
+        """Display interfaces (__str__ and header) tests."""
         card = Flashcard('Question', 'Answer')
         card.n_attempts = 'Attempts'
         card.n_correct = 'Correct'

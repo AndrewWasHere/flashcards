@@ -10,29 +10,22 @@ from lib.data_types import Const
 
 
 class TestConsts(Const):
+    """Constants to test."""
     foo = 'foo'
     bar = 'bar'
     baz = 'baz'
 
 
-class DataTypesTestCase(unittest.TestCase):
+class ConstTestCase(unittest.TestCase):
+    """Unittests for Const class."""
     def test_access(self):
-        """
-        Verify that constant values are returned by references.
-
-        :return:
-        """
+        """Constant access tests."""
         self.assertEqual(TestConsts.foo, 'foo')
         self.assertEqual(TestConsts.bar, 'bar')
         self.assertEqual(TestConsts.baz, 'baz')
 
     def test_all(self):
-        """
-        Verify that defined constants are the only things returned
-        in all() interface.
-
-        :return:
-        """
+        """all() interface tests."""
         consts = ['foo', 'bar', 'baz']
         for c in consts:
             self.assertTrue(c in TestConsts.all())

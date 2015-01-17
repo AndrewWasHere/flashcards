@@ -8,8 +8,24 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/
 
 
 class Const():
-    """
+    """Group of constants.
+
     Because Enum doesn't exist until Python 3.4.
+
+    Use:
+        >>> class Days(Const):
+        >>>     mon = 'Monday'
+        >>>     tue = 'Tuesday'
+        >>>     wed = 'Wednesday'
+        >>>     thu = 'Thursday'
+        >>>     fri = 'Friday'
+        >>>     sat = 'Saturday'
+        >>>     sun = 'Sunday'
+        >>>
+        >>> today = Days.mon
+        >>> print(today)
+        >>> Days.all()
+        >>> today in Days
     """
     @classmethod
     def all(cls):

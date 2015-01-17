@@ -13,9 +13,7 @@ from lib.deck import Deck
 
 
 class QuizTypes(Const):
-    """
-    Quiz types.
-    """
+    """Quiz types."""
     fill_in_the_blank = 'fill in the blank'
     multiple_choice = 'multiple choice'
 
@@ -25,20 +23,15 @@ Sorted = namedtuple('Sorted', ['hard', 'medium', 'easy'])
 
 
 class Quiz:
-    """
-    Flashcard quiz model.
-    """
+    """Flashcard quiz model."""
     def __init__(self, deck, hard_weight=1, medium_weight=1, easy_weight=1):
-        """Constructor.
-
-        Construct a flashcard quiz.
-
+        """
         Args:
             deck (str): Path to deck file.
             hard_weight (int): Favor (with respect to other weights) to give to
                 hard flashcards.
-            medium_weight (int): Favor (with respect to other weights) to give to
-                medium flashcards.
+            medium_weight (int): Favor (with respect to other weights) to give
+                to medium flashcards.
             easy_weight (int): Favor (with respect to other weights) to give to
                 easy flashcards.
         """

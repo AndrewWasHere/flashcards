@@ -6,12 +6,17 @@ Attribute-NonCommercial-ShareAlike 4.0 International License.
 http://creativecommons.org/licenses/by-nc-sa/4.0/
 """
 import unittest
-from mock import patch, MagicMock
+try:
+    from unittest.mock import patch, MagicMock
+except ImportError:
+    from mock import patch, MagicMock
+
 from lib import quiz
 from lib.flashcard import Flashcard
 
 
 class QuizTestCase(unittest.TestCase):
+    """Unittests for Quiz class."""
     def test_initialization(self):
         deck_filename = 'filename'
 

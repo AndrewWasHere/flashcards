@@ -9,6 +9,7 @@ import datetime
 
 
 class Flashcard:
+    """Question-answer pair."""
     def __init__(self, question=None, answer=None):
         # Card contents.
         self.question = question
@@ -29,17 +30,13 @@ class Flashcard:
         )
 
     def correct(self):
-        """
-        Tally a correct answer.
-        """
+        """Tally a correct answer."""
         self.n_correct += 1
         self.n_attempts += 1
         self.last_shown = datetime.datetime.utcnow()
 
     def incorrect(self):
-        """
-        Tally an incorrect answer.
-        """
+        """Tally an incorrect answer."""
         self.n_attempts += 1
         self.last_shown = datetime.datetime.utcnow()
 
