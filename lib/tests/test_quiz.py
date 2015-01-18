@@ -18,6 +18,7 @@ from lib.flashcard import Flashcard
 class QuizTestCase(unittest.TestCase):
     """Unittests for Quiz class."""
     def test_initialization(self):
+        """Initialization tests."""
         deck_filename = 'filename'
 
         with patch.object(quiz.Deck, 'load') as mock_load:
@@ -27,6 +28,7 @@ class QuizTestCase(unittest.TestCase):
         self.assertEqual(q.score(), (0, 0))
 
     def test_fill_in_the_blank(self):
+        """Fill in the blank, correct answer tests."""
         deck_filename = 'filename'
         # cards = []
         card1 = self.mocked_card('q1', 'a')
@@ -54,6 +56,7 @@ class QuizTestCase(unittest.TestCase):
             self.assertEqual(q.score()[1], len(cards))
 
     def test_fill_in_the_blank_incorrect(self):
+        """Fill in the blank, incorrect answer tests."""
         deck_filename = 'filename'
         # cards = []
         card1 = self.mocked_card('q1', 'a')
@@ -79,6 +82,12 @@ class QuizTestCase(unittest.TestCase):
             self.assertEqual(idx, len(cards) - 1)
             self.assertEqual(q.score()[0], 0)
             self.assertEqual(q.score()[1], len(cards))
+
+    def test_multiple_choice_correct(self):
+        """Multiple choice, correct answer tests."""
+
+    def test_multiple_choice_incorrect(self):
+        """Multiple choice, incorrect answer tests."""
 
     def mocked_card(self, question, answer):
         card = MagicMock(spec=Flashcard)

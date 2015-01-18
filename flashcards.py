@@ -7,7 +7,7 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/
 """
 import argparse
 import logging
-from lib.quiz import QuizTypes
+from lib.quiz import QuizTypes, Quiz
 
 _logger = logging.getLogger(__name__)
 
@@ -83,6 +83,31 @@ def parse_command_line():
             action='store_const',
             const=QuizTypes.multiple_choice
         )
+        qp.add_argument(
+            '--selections',
+            type=natural_number,
+            default=4,
+            help='Number of multiple choice answers to offer.'
+        )
+
+        qp.add_argument(
+            '--hard',
+            type=natural_number,
+            default=1,
+            help='Hard cards weight.'
+        )
+        qp.add_argument(
+            '--med',
+            type=natural_number,
+            default=1,
+            help='Medium cards weight.'
+        )
+        qp.add_argument(
+            '--easy',
+            type=natural_number,
+            default=1,
+            help='Easy card weight.'
+        )
 
         # Default values.
         qp.set_defaults(
@@ -147,6 +172,36 @@ def quiz(args):
     :return:
     """
     _logger.info('Quizzing with deck {}'.format(args.deck))
+
+    playing = True
+    while playing:
+        # Build quiz.
+        the_quiz = Quiz(args.deck, args.hard, args.med, args.easy)
+
+        # Play quiz.
+        for idx, q in enumerate(
+            the_quiz.run(args.cards, args.game_type, args.selections),
+            1
+        ):
+            print('{idx}) {question}'.format(idx=idx, question=q.question))
+            answer = input('==> ')
+            result, correct_answer = q.submit(answer)
+            print(
+                '{affirmation}. The answer is {answer}'.format(
+                    affirmation=result,
+                    answer=correct_answer
+                )
+            )
+
+        # End of quiz.
+        correct, attempts = the_quiz.score()
+        print(
+            'You got {correct} out of {total} correct.'.format(
+                correct=correct,
+                total=attempts
+            )
+        )
+        playing = input('Play again (y/n)?').lower().startswith('y')
 
 
 def main():

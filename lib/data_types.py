@@ -29,4 +29,4 @@ class Const():
     """
     @classmethod
     def all(cls):
-        return (m for m in cls.__dict__ if not m.startswith('__'))
+        return (getattr(cls, m) for m in cls.__dict__ if not m.startswith('__'))

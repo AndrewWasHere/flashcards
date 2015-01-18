@@ -5,8 +5,11 @@ This work is licensed under a Creative Commons
 Attribute-NonCommercial-ShareAlike 4.0 International License.
 http://creativecommons.org/licenses/by-nc-sa/4.0/
 """
+import datetime
+import tempfile
 import unittest
-from lib.deck import Deck
+from lib.deck import Deck, CardData
+from lib.flashcard import Flashcard
 
 
 class DeckTestCase(unittest.TestCase):
@@ -37,6 +40,29 @@ class DeckTestCase(unittest.TestCase):
 
         deck_cards = [c for c in deck]
         self.assertEqual(frozenset(cards), frozenset(deck_cards))
+
+    def test_load_and_save(self):
+        """load() interface tests."""
+        # Build a deck.
+        deck = Deck('test deck')
+        cards = [
+            Flashcard('q0', 'a0', 0, 0, str(datetime.datetime.utcnow())),
+            Flashcard('q1', 'a1', 0, 0, str(datetime.datetime.utcnow())),
+            Flashcard('q2', 'a2', 0, 0, str(datetime.datetime.utcnow()))
+        ]
+        for c in cards:
+            deck.add_card(c)
+
+        # Save and load the deck.
+        with tempfile.NamedTemporaryFile(mode='w', newline='') as tf:
+            deck.save(tf.name, overwrite=True)
+            saved_deck = Deck.load(tf.name)
+
+        # Test.
+        self.assertEqual(saved_deck, deck)
+
+    def test_answers(self):
+        """answers() interface tests."""
 
 
 if __name__ == '__main__':
