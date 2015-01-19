@@ -170,6 +170,33 @@ def quiz(args):
     Args:
         args (argparse.Namespace): command line arguments.
     """
+    def fill_in_the_blank_question():
+        print('{idx}) {question}'.format(idx=idx, question=q.question))
+        ans = input('==> ')
+        while ans == '':
+            ans = input('==> ')
+        return ans
+
+    def multiple_choice_question():
+        print('{idx}) {question}'.format(idx=idx, question=q.question))
+        answer_set = []
+        for i, choice in enumerate(q.answers):
+            sel = chr(ord('a') + i)
+            answer_set.append(sel)
+            print(
+                '  {letter}) {choice}'.format(
+                    letter=sel,
+                    choice=choice
+                )
+            )
+
+        ans = input('==> ')
+        while ans not in answer_set:
+            ans = input('==> ')
+
+        ans = ord(ans) - ord('a')
+        return ans
+
     _logger.info('Quizzing with deck {}'.format(args.deck))
 
     playing = True
@@ -186,13 +213,20 @@ def quiz(args):
             the_quiz.run(args.cards, args.game_type, args.selections),
             1
         ):
-            print('{idx}) {question}'.format(idx=idx, question=q.question))
-            answer = input('==> ')
+            answer = (
+                fill_in_the_blank_question()
+                if args.game_type == QuizTypes.fill_in_the_blank else
+                multiple_choice_question()
+            )
             result, correct_answer = q.submit(answer)
             print(
                 '{affirmation}. The answer is {answer}'.format(
                     affirmation='Correct' if result else 'Incorrect',
-                    answer=correct_answer
+                    answer=(
+                        correct_answer
+                        if args.game_type == QuizTypes.fill_in_the_blank else
+                        q.answers[correct_answer]
+                    )
                 )
             )
 

@@ -6,20 +6,23 @@ Attribute-NonCommercial-ShareAlike 4.0 International License.
 http://creativecommons.org/licenses/by-nc-sa/4.0/
 """
 from collections import namedtuple
+import logging
 import random
 import itertools
 from lib.data_types import Const
 from lib.deck import Deck
+
+_logger = logging.getLogger(__name__)
+
+
+Question = namedtuple('Question', ['question', 'answers', 'submit'])
+Sorted = namedtuple('Sorted', ['hard', 'medium', 'easy'])
 
 
 class QuizTypes(Const):
     """Quiz types."""
     fill_in_the_blank = 'fill in the blank'
     multiple_choice = 'multiple choice'
-
-
-Question = namedtuple('Question', ['question', 'answers', 'submit'])
-Sorted = namedtuple('Sorted', ['hard', 'medium', 'easy'])
 
 
 class Quiz:
@@ -35,6 +38,10 @@ class Quiz:
             easy_weight (int): Favor (with respect to other weights) to give to
                 easy flashcards.
         """
+        self._hard_correct_percentage = 0.75
+        self._medium_correct_percentage = 0.90
+        self._medium_correct_answers = 10
+
         self._deck_name = deck
         self._deck = Deck.load(deck)
         self._decks = Sorted(*self._sort_deck(self._deck))
@@ -63,10 +70,10 @@ class Quiz:
             Returns:
                 correct, answer_set (int, str): correct answer and answer set.
             """
-            remaining_answers = (
+            remaining_answers = [
                 a
                 for a in (all_answers - frozenset([card.answer]))
-            )
+            ]
             answer_set = (
                 [card.answer] +
                 random.sample(remaining_answers, selections - 1)
@@ -104,6 +111,13 @@ class Quiz:
             return result, correct_answer
 
         # Execution starts here. ###############################################
+        _logger.info(
+            'Running quiz {name} as a {number} question {type}.'.format(
+                name=self._deck_name,
+                number=card_count,
+                type=quiz_type
+            )
+        )
 
         self._correct = self._attempts = 0
 
@@ -242,11 +256,18 @@ class Quiz:
             else:
                 easy.append(c)
 
+        _logger.info('{} hard cards in deck.'.format(len(hard)))
+        _logger.info('{} medium cards in deck.'.format(len(medium)))
+        _logger.info('{} easy cards in deck.'.format(len(easy)))
+        _logger.info('{} total cards in deck.'.format(len(deck)))
+
         return hard, medium, easy
 
-    @staticmethod
-    def _is_hard(card):
+    def _is_hard(self, card):
         """Is card of hard difficulty?
+
+        Hard difficulty is defined by having a correct percentage of no more
+        than self._hard_correct_percentage.
 
         Args:
             card (Flashcard): card to classify.
@@ -254,11 +275,16 @@ class Quiz:
         Returns:
             (boolean): True -> Hard. False -> Not hard.
         """
-        return False
+        return (
+            (card.n_correct / card.n_attempts) <= self._hard_correct_percentage
+        )
 
-    @staticmethod
-    def _is_medium(card):
+    def _is_medium(self, card):
         """Is card of medium difficulty?
+
+        Medium difficulty is defined by having a correct percentage of no more
+        than self._medium_correct_percentage or having fewer than
+        self._medium_correct_answers correct answers.
 
         Args:
             card (Flashcard): card to classify.
@@ -266,5 +292,9 @@ class Quiz:
         Returns:
             (boolean): True -> Medium. False -> Not medium.
         """
-        return False
+        return (
+            card.n_correct < self._medium_correct_answers or
+            (card.n_correct / card.n_attempts) <=
+            self._medium_correct_percentage
+        )
 
