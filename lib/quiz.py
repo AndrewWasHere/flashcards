@@ -18,7 +18,7 @@ class QuizTypes(Const):
     multiple_choice = 'multiple choice'
 
 
-Question = namedtuple('Question', ['question', 'answers', 'submit_fn'])
+Question = namedtuple('Question', ['question', 'answers', 'submit'])
 Sorted = namedtuple('Sorted', ['hard', 'medium', 'easy'])
 
 
@@ -35,6 +35,7 @@ class Quiz:
             easy_weight (int): Favor (with respect to other weights) to give to
                 easy flashcards.
         """
+        self._deck_name = deck
         self._deck = Deck.load(deck)
         self._decks = Sorted(*self._sort_deck(self._deck))
         self._weights = Sorted(hard_weight, medium_weight, easy_weight)
@@ -115,15 +116,23 @@ class Quiz:
             None
         )
 
-        for card in self._deck_runner(card_count):
-            question = card.question
-            correct_answer, answers = (
-                (card.answer, None)
-                if quiz_type == QuizTypes.fill_in_the_blank else
-                multiple_choice_answers()
-            )
+        try:
+            for card in self._deck_runner(card_count):
+                question = card.question
+                correct_answer, answers = (
+                    (card.answer, None)
+                    if quiz_type == QuizTypes.fill_in_the_blank else
+                    multiple_choice_answers()
+                )
 
-            yield Question(question, answers, submit)
+                yield Question(question, answers, submit)
+
+        finally:
+            self._deck.save(self._deck_name, overwrite=True)
+
+    def name(self):
+        """Quiz name"""
+        return self._deck.name
 
     def score(self):
         """Quiz score.

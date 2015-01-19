@@ -56,7 +56,7 @@ class Deck:
         """
         name = ''
         deck = None
-        with open(filename, 'r', newline='') as f:
+        with open(filename, mode='r', newline='') as f:
             # Parse reserved keywords until we hit the beginning of quiz data.
             for line in f:
                 if cls._starts_with_reserved_word(line):
@@ -95,7 +95,7 @@ class Deck:
         if os.path.isfile(filename) and not overwrite:
             raise ValueError('{} exists.'.format(filename))
 
-        with open(filename, 'w', newline='') as f:
+        with open(filename, mode='w', newline='') as f:
             deckwriter = csv.writer(f)
             deckwriter.writerow(
                 [

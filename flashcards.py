@@ -115,7 +115,7 @@ def parse_command_line():
             func=quiz,
 
             # Settings.
-            cards=0,
+            cards=5,
             game_type=QuizTypes.fill_in_the_blank
         )
 
@@ -165,11 +165,10 @@ def create(args):
 
 
 def quiz(args):
-    """
-    Quiz user with flashcard deck.
+    """Quiz user with flashcard deck.
 
-    :param args:
-    :return:
+    Args:
+        args (argparse.Namespace): command line arguments.
     """
     _logger.info('Quizzing with deck {}'.format(args.deck))
 
@@ -177,8 +176,12 @@ def quiz(args):
     while playing:
         # Build quiz.
         the_quiz = Quiz(args.deck, args.hard, args.med, args.easy)
+        quiz_name = the_quiz.name()
 
         # Play quiz.
+        print(quiz_name)
+        print('=' * len(quiz_name))
+
         for idx, q in enumerate(
             the_quiz.run(args.cards, args.game_type, args.selections),
             1
@@ -188,7 +191,7 @@ def quiz(args):
             result, correct_answer = q.submit(answer)
             print(
                 '{affirmation}. The answer is {answer}'.format(
-                    affirmation=result,
+                    affirmation='Correct' if result else 'Incorrect',
                     answer=correct_answer
                 )
             )
@@ -201,7 +204,7 @@ def quiz(args):
                 total=attempts
             )
         )
-        playing = input('Play again (y/n)?').lower().startswith('y')
+        playing = input('Play again (y/n)? ').lower().startswith('y')
 
 
 def main():

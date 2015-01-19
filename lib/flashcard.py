@@ -19,14 +19,14 @@ class Flashcard:
         last_shown=None
     ):
         # Card contents.
-        self.question = question
-        self.answer = answer
+        self.question = question.strip()
+        self.answer = answer.strip()
 
         # Card statistics.
         self.n_attempts = int(attempts)
         self.n_correct = int(correct)
         self.last_shown = datetime.datetime.strptime(
-            last_shown,
+            last_shown.strip(),
             '%Y-%m-%d %H:%M:%S.%f'
         ) if last_shown else None
 

@@ -47,7 +47,7 @@ class DeckManipulationTestCase(unittest.TestCase):
         """Iteration tests."""
         self.assertEqual(
             frozenset(c for c in self.deck),
-            frozenset(self.deck_cards)
+            frozenset(self.cards)
         )
 
     def test_load_and_save(self):
