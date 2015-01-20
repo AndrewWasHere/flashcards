@@ -19,10 +19,11 @@ presents. Or the Quiz class could be wrapped inside a web API to create a
 client-server-based interface.
 
 Flashcards.py is the application, presenting card questions and answers, and
-translating user input for the Quiz class.
+translating user input for the Quiz class. (Flashcards is the View and Control)
 
 The Quiz class contains the 'smarts' of the game. It separates the cards into
 hard, medium, and easy questions based on the previous scores of the deck.
+(Quiz is the model)
 
 The Deck class is responsible for holding and serving up Flashcards.
 
@@ -66,18 +67,18 @@ the last time this question has been attempted. This ca be left blank if you
 are creating decks in a spreadsheet.
 
 ### Sample Deck File
-Name: Sample Deck
-Quiz:
-Question,Answer,Attempts,Correct,Last Shown
-1 + 1, 2
-1 + 2, 3
-1 + 3, 4
-1 + 4, 5
-1 + 5, 6
-1 + 6, 7
-1 + 7, 8
-1 + 8, 9
-1 + 9, 10
+    Name: Sample Deck
+    Quiz:
+    Question,Answer,Attempts,Correct,Last Shown
+    1 + 1, 2
+    1 + 2, 3
+    1 + 3, 4
+    1 + 4, 5
+    1 + 5, 6
+    1 + 6, 7
+    1 + 7, 8
+    1 + 8, 9
+    1 + 9, 10
 
 ## License
 This work is licensed under a Creative Commons
