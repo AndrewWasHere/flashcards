@@ -15,7 +15,7 @@ ported between systems without a complete rewrite.
 
 So, for instance, a gtk front end could be written with a Quiz mixin to present
 the user with a GUI interface instead of the text-based one that flashcards.py
-presents. Or the Quiz class culd be wrapped inside a web API to create a 
+presents. Or the Quiz class could be wrapped inside a web API to create a 
 client-server-based interface.
 
 Flashcards.py is the application, presenting card questions and answers, and

@@ -57,12 +57,15 @@ class Deck:
         name = ''
         deck = None
         with open(filename, mode='r', newline='') as f:
+            csvreader = csv.reader(f)
+
             # Parse reserved keywords until we hit the beginning of quiz data.
-            for line in f:
-                if cls._starts_with_reserved_word(line):
-                    if line.startswith(cls.ReservedWords.name):
-                        name = cls._deck_name(line)
-                    elif line.startswith(cls.ReservedWords.quiz):
+            for row in csvreader:
+                cell = row[0]
+                if cls._starts_with_reserved_word(cell):
+                    if cell.startswith(cls.ReservedWords.name):
+                        name = cls._deck_name(cell)
+                    elif cell.startswith(cls.ReservedWords.quiz):
                         break
 
             else:
@@ -70,7 +73,6 @@ class Deck:
 
             # Quiz data is csv.
             deck = cls(name)
-            csvreader = csv.reader(f)
             for idx, row in enumerate(csvreader):
                 if idx == 0:
                     continue
@@ -103,16 +105,10 @@ class Deck:
                         keyword=self.ReservedWords.name,
                         value=self.name
                     ),
-                    ]
-            )
-            deckwriter.writerow(
-                [
-                    self.ReservedWords.quiz,
                 ]
             )
-            deckwriter.writerow(
-                Flashcard.headers().split(', ')
-            )
+            deckwriter.writerow([self.ReservedWords.quiz])
+            deckwriter.writerow(Flashcard.headers().split(', '))
             for c in self._cards:
                 deckwriter.writerow(str(c).split(', '))
 

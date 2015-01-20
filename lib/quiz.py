@@ -275,8 +275,10 @@ class Quiz:
         Returns:
             (boolean): True -> Hard. False -> Not hard.
         """
-        return (
-            (card.n_correct / card.n_attempts) <= self._hard_correct_percentage
+        return QuizTools.correct_below_threshold(
+            card.n_correct,
+            card.n_attempts,
+            self._hard_correct_percentage
         )
 
     def _is_medium(self, card):
@@ -294,7 +296,25 @@ class Quiz:
         """
         return (
             card.n_correct < self._medium_correct_answers or
-            (card.n_correct / card.n_attempts) <=
-            self._medium_correct_percentage
+            QuizTools.correct_below_threshold(
+                card.n_correct,
+                card.n_attempts,
+                self._medium_correct_percentage
+            )
         )
 
+
+class QuizTools:
+    @staticmethod
+    def correct_below_threshold(correct, attempts, threshold):
+        """Is percent correct at or below threshold?
+
+        Args:
+             correct (int): number correct.
+             attempts (int): number of attempts.
+             threshold (float): threshold.
+
+        Returns:
+            (bool): True => at or below threshold.
+        """
+        return attempts == 0 or (correct / attempts) <= threshold

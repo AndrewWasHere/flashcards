@@ -23,8 +23,8 @@ class Flashcard:
         self.answer = answer.strip()
 
         # Card statistics.
-        self.n_attempts = int(attempts)
-        self.n_correct = int(correct)
+        self.n_attempts = int(attempts) if attempts else 0
+        self.n_correct = int(correct) if correct else 0
         self.last_shown = datetime.datetime.strptime(
             last_shown.strip(),
             '%Y-%m-%d %H:%M:%S.%f'
