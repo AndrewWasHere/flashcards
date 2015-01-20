@@ -121,9 +121,6 @@ class Quiz:
 
         self._correct = self._attempts = 0
 
-        if card_count == 'all':
-            card_count = len(self._deck)
-
         all_answers = (
             self._deck.answers()
             if quiz_type == QuizTypes.multiple_choice else
@@ -167,13 +164,18 @@ class Quiz:
             card (Flashcard): card from the deck.
         """
         # Combine cards into quiz deck based on queue weights.
-        deck = [
-            c
-            for _, c in itertools.takewhile(
-                lambda x: x[0] < n_cards,
-                enumerate(self._card_generator())
-            )
-        ]
+        deck = (
+            [c for c in self._deck]
+            if n_cards == 'all' else
+            [
+                c
+                for _, c in itertools.takewhile(
+                    lambda x: x[0] <= n_cards,
+                    enumerate(self._card_generator())
+                )
+            ]
+        )
+
         random.shuffle(deck)
 
         # Iterate.
