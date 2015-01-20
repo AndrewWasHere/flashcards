@@ -48,7 +48,7 @@ class QuizTestCase(unittest.TestCase):
                 )
             ):
                 self.assertTrue(question.question in card_questions)
-                question.submit_fn('a')
+                question.submit('a')
 
             mocked_deck.answers.assert_not_called()
             self.assertEqual(idx, len(cards) - 1)
@@ -76,7 +76,7 @@ class QuizTestCase(unittest.TestCase):
                 )
             ):
                 self.assertTrue(question.question in card_questions)
-                question.submit_fn('b')
+                question.submit('b')
 
             mocked_deck.answers.assert_not_called()
             self.assertEqual(idx, len(cards) - 1)
@@ -93,6 +93,8 @@ class QuizTestCase(unittest.TestCase):
         card = MagicMock(spec=Flashcard)
         card.question = question
         card.answer = answer
+        card.n_correct = 0
+        card.n_attempts = 0
         return card
 
 if __name__ == '__main__':
