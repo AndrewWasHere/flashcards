@@ -19,8 +19,8 @@ class Flashcard:
         last_shown=None
     ):
         # Card contents.
-        self.question = question.strip()
-        self.answer = answer.strip()
+        self.question = question.strip() if question else None
+        self.answer = answer.strip() if question else None
 
         # Card statistics.
         self.n_attempts = int(attempts) if attempts else 0
