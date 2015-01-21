@@ -50,6 +50,23 @@ class DeckManipulationTestCase(unittest.TestCase):
             frozenset(self.cards)
         )
 
+    def test_len(self):
+        """__len__() tests."""
+        self.assertEqual(len(self.cards), len(self.deck))
+
+    def test_equality(self):
+        """__eq__() tests."""
+        other_deck = Deck('other deck')
+        for c in self.cards:
+            other_deck.add_card(c)
+
+        other_other_deck = Deck(self.deck_name)
+
+        self.assertEqual(self.deck, self.deck)
+        self.assertNotEqual(self.deck, other_deck)
+        self.assertNotEqual(self.deck, other_other_deck)
+        self.assertNotEqual(self.deck, 'not a deck')
+
     def test_load_and_save(self):
         """load() and save() interface tests."""
         # Save and load the deck.
@@ -88,6 +105,32 @@ Question,Answer,Attempts,Correct,Last Shown
         expected_answers = frozenset([c.answer for c in self.cards])
         self.assertEqual(frozenset(self.deck.answers()), expected_answers)
 
+
+class DeckUtilsTestCase(unittest.TestCase):
+    """Unittests for Deck utilities."""
+    def test_starts_with_reserved_word(self):
+        """_starts_with_reserved_word() interface tests."""
+        for w in Deck.ReservedWords.all():
+            self.assertTrue(
+                Deck._starts_with_reserved_word(
+                    '{} is a reserved word'.format(w)
+                )
+            )
+
+    def test_does_not_start_with_reserved_word(self):
+        """_starts_with_reserved_word() interface tests."""
+        self.assertFalse(
+            Deck._starts_with_reserved_word('This is not a reserved word.')
+        )
+
+    def test_deck_name(self):
+        """_deck_name() interface tests."""
+        deck_name = 'Mr. Neutron'
+        named = Deck._deck_name(
+            '{} {}'.format(Deck.ReservedWords.name, deck_name)
+        )
+
+        self.assertEqual(named, deck_name)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
