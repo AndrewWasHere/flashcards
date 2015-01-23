@@ -40,6 +40,8 @@ class Quiz:
         """
         self._hard_correct_percentage = 0.75
         self._medium_correct_percentage = 0.90
+
+        self._hard_correct_answers = 5
         self._medium_correct_answers = 10
 
         self._deck_name = deck
@@ -170,7 +172,7 @@ class Quiz:
             [
                 c
                 for _, c in itertools.takewhile(
-                    lambda x: x[0] <= n_cards,
+                    lambda x: x[0] < n_cards,
                     enumerate(self._card_generator())
                 )
             ]
@@ -277,10 +279,13 @@ class Quiz:
         Returns:
             (boolean): True -> Hard. False -> Not hard.
         """
-        return QuizTools.correct_below_threshold(
-            card.n_correct,
-            card.n_attempts,
-            self._hard_correct_percentage
+        return (
+            card.n_correct < self._hard_correct_answers or
+            QuizTools.correct_below_threshold(
+                card.n_correct,
+                card.n_attempts,
+                self._hard_correct_percentage
+            )
         )
 
     def _is_medium(self, card):
@@ -302,6 +307,7 @@ class Quiz:
                 card.n_correct,
                 card.n_attempts,
                 self._medium_correct_percentage
+                # TODO: Add age of card since last attempt.
             )
         )
 
