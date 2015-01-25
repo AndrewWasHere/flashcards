@@ -6,7 +6,11 @@ Attribute-NonCommercial-ShareAlike 4.0 International License.
 http://creativecommons.org/licenses/by-nc-sa/4.0/
 """
 import argparse
+import csv
 import logging
+import os
+import itertools
+from lib.flashcard import Flashcard
 from lib.quiz import QuizTypes, Quiz
 
 _logger = logging.getLogger(__name__)
@@ -138,6 +142,8 @@ def parse_command_line():
     setup_quiz_parser()
 
     args = parser.parse_args()
+    args.deck = os.path.abspath(os.path.expanduser(args.deck))
+
     return args
 
 
@@ -155,13 +161,31 @@ def setup_logging(logfile, level):
 
 
 def create(args):
-    """
-    Create a new flashcard deck.
+    """Create a new flashcard deck.
 
-    :param args:
-    :return:
+    Args:
+        args (argparse.Namespace): command line arguments.
     """
     _logger.info('Creating deck {}.'.format(args.deck))
+
+    if os.path.exists(args.deck):
+        raise ValueError('{} already exists.'.format(args.deck))
+
+    with open(args.deck, 'w') as f:
+        name = input('Deck Name: ')
+        f.write('Name: {}\n'.format(name))
+        f.write('Quiz:\n')
+        f.write(Flashcard.headers() + '\n')
+
+        csvwriter = csv.writer(f)
+        print('Enter an empty question to finish.')
+        for idx in itertools.count(1):
+            q = input('Question #{}: '.format(idx))
+            if not q:
+                break
+
+            a = input('Answer #{}: '.format(idx))
+            csvwriter.writerow([q, a])
 
 
 def quiz(args):
