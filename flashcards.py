@@ -10,6 +10,7 @@ import csv
 import logging
 import os
 import itertools
+from lib.deck import Deck
 from lib.flashcard import Flashcard
 from lib.quiz import QuizTypes, Quiz
 
@@ -43,7 +44,7 @@ def parse_command_line():
     :return args:
     """
     def setup_create_parser():
-        cp = subparsers.add_parser('create')
+        cp = subparsers.add_parser('create', help='Create a new deck.')
         cp.add_argument(
             'deck',
             type=str,
@@ -51,8 +52,26 @@ def parse_command_line():
         )
         cp.set_defaults(func=create)
 
+    def setup_swap_parser():
+        cp = subparsers.add_parser(
+            'swap',
+            help='Create a new deck by swapping questions and answers.'
+        )
+        cp.add_argument(
+            'source',
+            dest='deck',
+            type=str,
+            help='Filename of source flashcard deck.'
+        )
+        cp.add_argument(
+            'dest',
+            type=str,
+            help='Filename of destination flashcard deck.'
+        )
+        cp.set_defaults(func=swap)
+
     def setup_quiz_parser():
-        qp = subparsers.add_parser('quiz')
+        qp = subparsers.add_parser('quiz', help='Run a quiz.')
         qp.add_argument(
             'deck',
             type=str,
@@ -140,20 +159,22 @@ def parse_command_line():
 
     setup_create_parser()
     setup_quiz_parser()
+    setup_swap_parser()
 
     args = parser.parse_args()
     args.deck = os.path.abspath(os.path.expanduser(args.deck))
+    if hasattr(args, 'dest'):
+        args.dest = os.path.abspath(os.path.expanduser(args.dest))
 
     return args
 
 
 def setup_logging(logfile, level):
-    """
-    Set up logging.
+    """Set up logging.
 
-    :param logfile:
-    :param level:
-    :return:
+    Args:
+        logfile (str): Path to log file.
+        level (int): Log level. Higher is more detailed.
     """
     levels = [logging.WARNING, logging.INFO, logging.DEBUG]
     log_level = levels[min(len(levels) - 1, level)]
@@ -171,25 +192,44 @@ def create(args):
     if os.path.exists(args.deck):
         raise ValueError('{} already exists.'.format(args.deck))
 
-    with open(args.deck, 'w') as f:
-        name = input('Deck Name: ')
-        f.write('Name: {}\n'.format(name))
-        f.write('Quiz:\n')
-        f.write(Flashcard.headers() + '\n')
+    name = input('Deck Name: ')
+    deck = Deck(name)
+    print('Enter an empty question to finish.')
+    for idx in itertools.count(1):
+        q = input('Question #{}: '.format(idx))
+        if not q:
+            break
 
-        csvwriter = csv.writer(f)
-        print('Enter an empty question to finish.')
-        for idx in itertools.count(1):
-            q = input('Question #{}: '.format(idx))
-            if not q:
-                break
+        a = input('Answer #{}: '.format(idx))
+        deck.add_card(Flashcard(q, a))
 
-            a = input('Answer #{}: '.format(idx))
-            csvwriter.writerow([q, a])
+    deck.save(args.deck)
+
+
+def swap(args):
+    """Swap-create a new flashcard deck.
+
+    Create a new flashcard deck by swapping questions and answers.
+
+    Args:
+        args (argparse.Namespace): command line arguments.
+    """
+    print(
+        'Swapping questions and answers from {} and saving to {}.'.format(
+            args.deck,
+            args.dest
+        )
+    )
+    src = Deck.load(args.deck)
+    dest = Deck(src.name)
+    for c in src:
+        dest.add_card(Flashcard(c.answer, c.question))
+
+    dest.save(args.dest)
 
 
 def quiz(args):
-    """Quiz user with flashcard deck.
+    """Quiz the user with flashcard deck.
 
     Args:
         args (argparse.Namespace): command line arguments.
