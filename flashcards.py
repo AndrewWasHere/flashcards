@@ -119,7 +119,7 @@ def parse_command_line():
             func=quiz,
 
             # Settings.
-            cards=5,
+            cards=20,
             game_type=QuizTypes.fill_in_the_blank
         )
 
