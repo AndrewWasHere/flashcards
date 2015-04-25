@@ -1,9 +1,8 @@
 """
-Copyright 2015, Andrew Lin
-
-This work is licensed under a Creative Commons
-Attribute-NonCommercial-ShareAlike 4.0 International License.
-http://creativecommons.org/licenses/by-nc-sa/4.0/
+Copyright 2015, Andrew Lin.
+All rights reserved.
+Licensed under the BSD 3-clause License. See LICENSE.txt or
+<http://opensource.org/licenses/BSD-3-Clause>.
 """
 import datetime
 import tempfile
