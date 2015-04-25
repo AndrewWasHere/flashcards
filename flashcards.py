@@ -58,8 +58,7 @@ def parse_command_line():
             help='Create a new deck by swapping questions and answers.'
         )
         cp.add_argument(
-            'source',
-            dest='deck',
+            'deck',
             type=str,
             help='Filename of source flashcard deck.'
         )
@@ -162,7 +161,14 @@ def parse_command_line():
     setup_swap_parser()
 
     args = parser.parse_args()
-    args.deck = os.path.abspath(os.path.expanduser(args.deck))
+
+    if not hasattr(args, 'func'):
+        parser.print_help()
+        exit()
+
+    if hasattr(args, 'deck'):
+        args.deck = os.path.abspath(os.path.expanduser(args.deck))
+
     if hasattr(args, 'dest'):
         args.dest = os.path.abspath(os.path.expanduser(args.dest))
 
@@ -178,7 +184,7 @@ def setup_logging(logfile, level):
     """
     levels = [logging.WARNING, logging.INFO, logging.DEBUG]
     log_level = levels[min(len(levels) - 1, level)]
-    logging.basicConfig(filename=logfile, filemode='a', level=log_level)
+    logging.basicConfig(filename=logfile, level=log_level)
 
 
 def create(args):
